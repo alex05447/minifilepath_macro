@@ -36,8 +36,8 @@ pub(crate) fn filepath_impl(item: TokenStream2) -> TokenStream {
 
             // Trim quotes: ["asdf"] -> [asdf].
             if let Some(no_prefix_string) = orig_string.strip_prefix("\"") {
-                if let Some(_) = no_prefix_string.strip_suffix("\"") {
-                    match FilePath::new(&orig_string) {
+                if let Some(no_quotes_string) = no_prefix_string.strip_suffix("\"") {
+                    match FilePath::new(&no_quotes_string) {
                         Ok(_) => {
                             let string_lit: Literal2 = string_lit.into();
 
@@ -46,14 +46,17 @@ pub(crate) fn filepath_impl(item: TokenStream2) -> TokenStream {
                             ))
                         }
                         Err(err) => {
-                            panic!("`{}` macro takes one non-empty quoted file path string literal - `{}` is not a valid file path ({})", macro_name, orig_string, err);
+                            panic!(
+                                "\"{}\" is not a valid file path ({})",
+                                no_quotes_string, err
+                            );
                         }
                     }
                 } else {
-                    panic!("`{}` macro takes one non-empty quoted file path string literal - `{}` does not end with a quote", macro_name, orig_string);
+                    panic!("`{}` macro takes one non-empty quoted file path string literal - \"{}\" does not end with a quote", macro_name, orig_string);
                 }
             } else {
-                panic!("`{}` macro takes one non-empty quoted file path string literal - `{}` does not start with a quote", macro_name, orig_string);
+                panic!("`{}` macro takes one non-empty quoted file path string literal - \"{}\" does not start with a quote", macro_name, orig_string);
             }
         }
 
