@@ -1,4 +1,4 @@
-//! Exports the `filepath!` macro to create compile-time checked file [`FilePath`](minifilepath::FilePath)'s.
+//! Exports the `filepath!` macro to create compile-time checked [`FilePath`](minifilepath::FilePath)'s.
 
 use {
     minifilepath::FilePath,
@@ -42,7 +42,7 @@ pub(crate) fn filepath_impl(item: TokenStream2) -> TokenStream {
                             let string_lit: Literal2 = string_lit.into();
 
                             TokenStream::from(quote!(
-                                unsafe { FilePath::new_unchecked(#string_lit) }
+                                unsafe { minifilepath::FilePath::new_unchecked(#string_lit) }
                             ))
                         }
                         Err(err) => {
